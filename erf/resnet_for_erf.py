@@ -4,7 +4,11 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------'
 
-from torchvision.models.resnet import ResNet, Bottleneck, BasicBlock, load_state_dict_from_url, model_urls
+from torchvision.models.resnet import ResNet, Bottleneck, BasicBlock,  model_urls
+try:
+    from torch.hub import load_state_dict_from_url
+except ImportError:
+    from torch.utils.model_zoo import load_url as load_state_dict_from_url
 
 class ResNetForERF(ResNet):
 
