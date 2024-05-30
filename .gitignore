@@ -7,5 +7,6 @@
 *.jpg
 *.pyc
 !/erf/val/
-!/erf/demo.pth
+/erf/demo.pth
 *.npy
+
