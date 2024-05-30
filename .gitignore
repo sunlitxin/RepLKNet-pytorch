@@ -3,4 +3,7 @@
 #*log/*
 .idea/
 *nori*
-
+*.png
+*.jpg
+*.pyc
+!/erf/val/

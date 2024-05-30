@@ -4,6 +4,9 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------'
 
+import netron
+import torch.onnx
+
 import os
 import argparse
 import numpy as np
@@ -12,9 +15,12 @@ from timm.utils import AverageMeter
 from torchvision import datasets, transforms
 from timm.data.constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 from PIL import Image
-from erf.resnet_for_erf import resnet101, resnet152
-from erf.replknet_for_erf import RepLKNetForERF
+
 from torch import optim as optim
+
+from erf import get_model
+from erf.iresnet import Self_Atten, ConcatNet_
+
 
 
 def parse_args():
@@ -23,7 +29,7 @@ def parse_args():
     parser.add_argument('--weights', default=None, type=str, help='path to weights file. For resnet101/152, ignore this arg to download from torchvision')
     parser.add_argument('--data_path', default='path_to_imagenet', type=str, help='dataset path')
     parser.add_argument('--save_path', default='temp.npy', type=str, help='path to save the ERF matrix (.npy file)')
-    parser.add_argument('--num_images', default=50, type=int, help='num of images to use')
+    parser.add_argument('--num_images', default=30, type=int, help='num of images to use')
     args = parser.parse_args()
     return args
 
@@ -43,7 +49,7 @@ def get_input_grad(model, samples):
 def main(args):
     #   ================================= transform: resize to 1024x1024
     t = [
-        transforms.Resize((1024, 1024), interpolation=Image.BICUBIC),
+        transforms.Resize((112, 112), interpolation=Image.BICUBIC),
         transforms.ToTensor(),
         transforms.Normalize(IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD)
     ]
@@ -60,18 +66,35 @@ def main(args):
     data_loader_val = torch.utils.data.DataLoader(dataset, sampler=sampler_val,
         batch_size=1, num_workers=1, pin_memory=True, drop_last=False)
 
-    if args.model == 'resnet101':
-        model = resnet101(pretrained=args.weights is None)
-    elif args.model == 'resnet152':
-        model = resnet152(pretrained=args.weights is None)
-    elif args.model == 'RepLKNet-31B':
-        model = RepLKNetForERF(large_kernel_sizes=[31,29,27,13], layers=[2,2,18,2], channels=[128,256,512,1024],
-                    small_kernel=5, small_kernel_merged=False)
-    elif args.model == 'RepLKNet-13':
-        model = RepLKNetForERF(large_kernel_sizes=[13] * 4, layers=[2,2,18,2], channels=[128,256,512,1024],
-                    small_kernel=5, small_kernel_merged=False)
-    else:
-        raise ValueError('Unsupported model. Please add it here.')
+
+    #prefix = 'E:/BaiduSyncdisk/PHD_WorkSpace/SA_Face_Store/testarcface/model.pt'
+    prefix = 'E:/Xinyang_Github/Xinyang_ArcFace/work_dirs/ms1mv2_r100/model0.pt'
+    #prefix = 'E:/Xinyang_Github/Xinyang_ArcFace/work_dirs/ms1mv2_r100/model.pt'#master
+    weight = torch.load(prefix)
+
+    backbone = get_model(
+        'r100', dropout=0.0, fp16=True, num_features=512).cuda()
+    backbone1 = Self_Atten(fp16=True, ).cuda()
+    resnet = ConcatNet_(backbone, backbone1).cuda()
+    resnet.load_state_dict(weight,)
+    model = torch.nn.DataParallel(resnet)
+    # model = resnet
+
+  #
+  #
+  # #流程图可视化
+  #
+  #   myNet = model  # 实例化 resnet18
+  #   x = torch.HalfTensor(1, 3, 112, 112).cuda()  # 随机生成一个输入
+  #   modelData = "./demo.pth"  # 定义模型数据保存的路径
+  #   # modelData = "./demo.onnx"  # 有人说应该是 onnx 文件，但我尝试 pth 是可以的
+  #   torch.onnx.export(myNet, x, modelData)  # 将 pytorch 模型以 onnx 格式导出并保存
+  #   netron.start(modelData)
+
+
+
+
+
 
     if args.weights is not None:
         print('load weights')
@@ -82,7 +105,7 @@ def main(args):
             weights = weights['state_dict']
         model.load_state_dict(weights)
         print('loaded')
-
+    # print(model)
     model.cuda()
     model.eval()    #   fix BN and droppath
 
