@@ -7,11 +7,11 @@ import urllib.parse
 #输入索要查询的url就可以爬虫下载图片
 
 # 查询的关键词
-query_name = 'zhouxingchi'
+query_name = 'yueyunpeng'
 encoded_query_name = requests.utils.quote(query_name)
 
 # 目标URL模板
-url1 = 'https://image.baidu.com/search/index?tn=baiduimage&ipn=r&ct=201326592&cl=2&lm=-1&st=-1&fm=result&fr=&sf=1&fmq=1716983993714_R&pv=&ic=&nc=1&z=&hd=&latest=&copyright=&se=1&showtab=0&fb=0&width=&height=&face=0&istype=2&dyTabStr=MCwxLDMsMiw2LDQsNSw4LDcsOQ%3D%3D&ie=utf-8&sid=&word=%E5%91%A8%E6%98%9F%E9%A9%B0'
+url1 = 'https://image.baidu.com/search/index?tn=baiduimage&ipn=r&ct=201326592&cl=2&lm=-1&st=-1&fm=result&fr=&sf=1&fmq=1717489329643_R&pv=&ic=&nc=1&z=&hd=&latest=&copyright=&se=1&showtab=0&fb=0&width=&height=&face=0&istype=2&dyTabStr=MCwxLDMsMiw2LDQsNSw4LDcsOQ%3D%3D&ie=utf-8&sid=&word=%E5%B2%B3%E4%BA%91%E9%B9%8F'
 
 parsed_url = urllib.parse.urlparse(url1)
 query_params = urllib.parse.parse_qs(parsed_url.query)

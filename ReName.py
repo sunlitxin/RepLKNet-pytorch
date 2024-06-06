@@ -56,7 +56,7 @@ def rename_images(directory):
 
 
 # 指定上级文件夹路径
-parent_directory = r"E:\data-eeg\StarImg_OnlyFace - 50\CelebritiesFaces\Male_Celebrities"
+parent_directory = r"E:\data-eeg\StarImg_OnlyFace - 50\FaceEEG_IMG"
 
 # 调用函数重命名所有子目录中的图片
 rename_images_in_subdirectories(parent_directory)

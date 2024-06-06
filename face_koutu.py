@@ -36,8 +36,8 @@ def detect_and_save_faces(image_path, output_dir,face_count):
 
 
 # 文件路径和保存目录
-input_dir = 'E:\CV_Data\Face-EEG\StarImg\chineseface\\songdandan'
-output_dir = 'E:\data-eeg\StartImg_OnlyFace\\songdandan'
+input_dir = 'E:\CV_Data\Face-EEG\StarImg\chineseface\\yueyunpeng'
+output_dir = 'E:\data-eeg\StarImg_OnlyFace\\yueyunpeng'
 
 # 确保保存目录存在
 if not os.path.exists(output_dir):
@@ -46,14 +46,14 @@ if not os.path.exists(output_dir):
 
 # 遍历图片目录中的所有文件
 for filename in os.listdir(input_dir):
-    #--------------防止中文字符报错先修改img名字--------------
-    # 获取文件的扩展名
-    _, ext = os.path.splitext(filename)
-    # 构建新的文件名
-    new_filename = f"{face_count}{ext}"
-    # 重命名文件
-    os.rename(os.path.join(input_dir, filename), os.path.join(input_dir, new_filename))
-    #----------------------------------------------------
+    # #--------------防止中文字符报错先修改img名字--------------
+    # # 获取文件的扩展名
+    # _, ext = os.path.splitext(filename)
+    # # 构建新的文件名
+    # new_filename = f"{face_count}{ext}"
+    # # 重命名文件
+    # os.rename(os.path.join(input_dir, filename), os.path.join(input_dir, new_filename))
+    # #----------------------------------------------------
 
     #face_count++
     face_count += 1
